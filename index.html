@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YouTube Player App</title>
+</head>
+<body>
+  <h2>Simple YouTube Player</h2>
+  <input type="text" id="youtube-url" placeholder="Enter YouTube URL" style="width: 300px;" />
+  <button onclick="loadVideo()">Play Video</button>
+
+  <div id="player" style="margin-top: 20px;"></div>
+
+  <script>
+    // Load YouTube IFrame API
+    var tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+    var player;
+
+    function extractVideoId(url) {
+      const regex = /(?:https?:\/\/)?(?:www\.|m\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]{11})/;
+      const match = url.match(regex);
+      return match ? match[1] : null;
+    }
+
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player('player', {
+        height: '390',
+        width: '640',
+        videoId: '',
+      });
+    }
+
+    function loadVideo() {
+      const url = document.getElementById('youtube-url').value;
+      const videoId = extractVideoId(url);
+      if (videoId && player) {
+        player.loadVideoById(videoId);
+      } else if (videoId) {
+        player = new YT.Player('player', {
+          height: '390',
+          width: '640',
+          videoId: videoId
+        });
+      } else {
+        alert("Invalid YouTube URL");
+      }
+    }
+  </script>
+</body>
+</html>
